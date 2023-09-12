@@ -38,6 +38,17 @@ Note: you can also use [Azure Cloud Shell](https://learn.microsoft.com/en-us/azu
 
   When prompted, answer `yes` to deploy the solution.
 
+  Take note of the `storage_account_url` output shown.
+
+* Run:
+
+  ```shell
+  cd src
+  dotnet run https://STORAGE_ACCOUNT_NAME.blob.core.windows.net/
+  ```
+
+  Replacing the URL with the `storage_account_url` Terraform output.
+
 ## Destroying the solution
 
 Run:
