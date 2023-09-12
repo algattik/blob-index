@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" { }
+
 resource "azurerm_storage_account" "main" {
   name                     = format("st%s%s", var.name_part1, var.name_part2)
   location                 = var.location
@@ -9,6 +11,12 @@ resource "azurerm_storage_account" "main" {
     change_feed_enabled = true
   }
 
+}
+
+resource "azurerm_role_assignment" "main" {
+  scope                = azurerm_storage_account.main.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 resource "azurerm_storage_container" "main" {

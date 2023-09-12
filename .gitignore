@@ -164,3 +164,8 @@ cython_debug/
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
+
+bin/
+obj/
+.DS_Store
+.idea/

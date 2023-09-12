@@ -10,3 +10,7 @@ output "name" {
 output "key" {
   value = azurerm_storage_account.main.primary_access_key
 }
+
+output "url" {
+  value = azurerm_storage_account.main.primary_blob_endpoint
+}
