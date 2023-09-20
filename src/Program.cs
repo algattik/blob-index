@@ -15,6 +15,7 @@ async Task ChangeFeedStreamAsync
     BlobChangeFeedClient changeFeedClient = blobServiceClient.GetChangeFeedClient();
 
     DateTime previous = DateTime.Now;
+    Dictionary<string, int> eventTypesCount = new Dictionary<string, int>();
     while (!ct.IsCancellationRequested)
     {
         IAsyncEnumerator<Page<BlobChangeFeedEvent>> enumerator = changeFeedClient
@@ -31,12 +32,10 @@ async Task ChangeFeedStreamAsync
                 foreach (var changeFeedEvent in enumerator.Current.Values)
                 {
                     eventsInPage++;
-                    string subject = changeFeedEvent.Subject;
                     string eventType = changeFeedEvent.EventType.ToString();
-
-                    // Console.WriteLine("Subject: " + subject + "\n" +
-                    //                   "Event Type: " + eventType + "\n" +
-                    //                   "Api: " + "");
+                    if (!eventTypesCount.ContainsKey(eventType))
+                        eventTypesCount[eventType] = 0;
+                    eventTypesCount[eventType]++;
                 }
 
                 // helper method to save cursor. 
@@ -49,8 +48,13 @@ async Task ChangeFeedStreamAsync
             }
 
             eventsInBatch += eventsInPage;
-            Console.WriteLine("Processing [" + eventsInBatch + " events in batch] [Rate: " +
-                              (eventsInPage * 1f / (DateTime.Now - previous).TotalSeconds) + " events/s]");
+            Console.WriteLine(
+                $"Processing [{eventsInBatch} events in batch] [Rate: {(eventsInPage * 1f / (DateTime.Now - previous).TotalSeconds)} events/s]");
+            Console.WriteLine("Event types:");
+            foreach (var p in eventTypesCount.OrderBy(p => p.Key))
+            {
+                Console.WriteLine($" {p.Key}: {p.Value}");
+            }
             previous = DateTime.Now;
         }
 
